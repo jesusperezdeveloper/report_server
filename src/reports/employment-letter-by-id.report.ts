@@ -1,6 +1,18 @@
 import type { Content, StyleDictionary, TDocumentDefinitions } from "pdfmake/interfaces";
-
 import { headerSection } from "./sections/header.section";
+import { DateFormatter } from "src/helpers";
+
+interface ReportValues {
+    employerName: string;
+    employerPosition: string;
+    employeeName: string;
+    employeePosition: string;
+    employeeStartData: Date;
+    employeeHours: number;
+    employeeWorkSchedule: string;
+    eomployerCompany: string;
+}
+
 
 const style: StyleDictionary = {
     header: {
@@ -35,31 +47,43 @@ const style: StyleDictionary = {
 
 
 
-export const getEmploymentLetterReport = (): TDocumentDefinitions => {
+export const getEmploymentLetterByIdReport = (values: ReportValues): TDocumentDefinitions => {
+
+    const {
+        employerName,
+        employerPosition,
+        employeeName,
+        employeePosition,
+        employeeStartData,
+        employeeHours,
+        employeeWorkSchedule,
+        eomployerCompany
+    } = values;
+
+
     const docDefinition: TDocumentDefinitions = {
         styles: style,
         pageMargins: [40, 60, 40, 60],
         header: headerSection({
             showLogo: true,
             showDate: true,
-            title: 'CONSTANCIA DE EMPLEO',
+            //title: 'CONSTANCIA DE EMPLEO',
         }),
         content: [
-            /* {
+            {
                 text: 'CONSTANCIA DE EMPLEO',
                 style: 'header',
-            }, */
+            },
             {
-                text: `Yo, [Nombre del Empleador], en mi calidad de [Cargo del Empleador] de [Nombre de la Empresa],
-                por medio de la presente certifco que [Nombre del Empleado] ha sido empleado en nuestra
-                empresa desde el [Fecha de Inicio del Empleado].
+                text: `Yo, ${values.employerName}, en mi calidad de ${values.employerPosition} de ${values.eomployerCompany},
+                por medio de la presente certifco que ${values.employeeName} ha sido empleado en nuestra
+                empresa desde el ${DateFormatter.getDDMMMMYYYY(values.employeeStartData)}.
                 \n\n
-                Durante su empleo, el Sr./Sra. [Nombre del Empleado] ha desempeñado el cargo de [Cargo del
-                Empleado], demostrando responsabilidad, compromiso y habilidades profesionales en sus
+                Durante su empleo, el Sr./Sra. ${values.employeeName} ha desempeñado el cargo de ${values.employeePosition}, demostrando responsabilidad, compromiso y habilidades profesionales en sus
                 labores.
                 \n\n
-                La jornada laboral del Sr./ Sra. [Nombre del Empleado] es de [Número de Horas] horas
-                semanales, con un horario de [Horario de Trabajo], cumpliendo con las políticas y
+                La jornada laboral del Sr./ Sra. ${values.employeeName} es de ${values.employeeHours} horas
+                semanales, con un horario de ${values.employeeWorkSchedule}, cumpliendo con las políticas y
                 procedimientos establecidos por la empresa.
                 \n\n
                 Esta constancia se expide a solicitud del interesado para los fines que considere conveniente.,
@@ -67,14 +91,14 @@ export const getEmploymentLetterReport = (): TDocumentDefinitions => {
                 style: 'body',
             },
             { text: `Atentamente:`, style: 'signature' },
-            { text: `[Nombre del Empleador]`, style: 'signature' },
-            { text: `[Cargo del Empleador]`, style: 'signature' },
+            { text: `${values.employerName}`, style: 'signature' },
+            { text: `${values.employerPosition}`, style: 'signature' },
             {
-                text: `[Nombre de la Empresa]`,
+                text: `${values.eomployerCompany}`,
                 style: 'signature'
             },
             {
-                text: `[Fecha de Emisión]`,
+                text: `${DateFormatter.getDDMMMMYYYY(new Date())}`,
                 style: 'signature'
             }
         ],
